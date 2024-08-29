@@ -23,9 +23,9 @@ exports.getUserById = (req, res) => {
 // UPDATE - Actualizar un usuario
 exports.updateUser = (req, res) => {
     const userId = req.params.id;
-    const { first_name, last_name, email, phone } = req.body;
-    const sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE id_user = ?";
-    const values = [first_name, last_name, email, phone, userId];
+    const { first_name, last_name, email, phone, Rol } = req.body;
+    const sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ?, Rol = ? WHERE id_user = ?";
+    const values = [first_name, last_name, email, phone, Rol, userId];
     con.query(sql, values, (err, result) => {
         if (err) return res.json({ Error: "Error updating data" });
         return res.json({ Status: "Success" });
@@ -39,5 +39,16 @@ exports.deleteUser = (req, res) => {
     con.query(sql, userId, (err, result) => {
         if (err) return res.json({ Error: "Error deleting data" });
         return res.json({ Status: "Success" });
+    });
+};
+
+// CREATE - Crear un nuevo usuario (si es necesario)
+exports.createUser = (req, res) => {
+    const { first_name, last_name, email, phone, Rol } = req.body;
+    const sql = "INSERT INTO users (first_name, last_name, email, phone, Rol) VALUES (?, ?, ?, ?, ?)";
+    const values = [first_name, last_name, email, phone, Rol];
+    con.query(sql, values, (err, result) => {
+        if (err) return res.json({ Error: "Error inserting data" });
+        return res.json({ Status: "Success", UserId: result.insertId });
     });
 };

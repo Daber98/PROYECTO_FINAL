@@ -127,15 +127,6 @@ const Reservaciones = () => {
                     onChange={handleInputChange}
                     disabled
                   />
-                  <TextField
-                    label="Monto"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    name="ammount"
-                    value={formData.ammount}
-                    onChange={handleInputChange}
-                  />
                   <div style={{marginTop: 25, marginLeft: 175}}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} >
                       <DatePicker

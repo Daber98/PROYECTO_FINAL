@@ -6,22 +6,32 @@ exports.login = (req, res) => {
     const { email, password } = req.body;
 
     const sql = "SELECT * FROM users WHERE email = ?";
-    con.query(sql, [email], (err, result) => {
+    con.query(sql, [email], async (err, result) => {
         if (err) {
-            return res.json({ Status: "Error", Error: "Error in running query" });
+            return res.json({ Status: "Error", Error: "Error al ejecutar la consulta" });
         }
 
         if (result.length > 0) {
+            const user = result[0];
             const passwordHash = bcrypt.compare(password, result[0].password) 
                 
                 if (!passwordHash) {
-                    return res.json({ Status: "Error", Error: "Wrong Email or Password" });
+                    return res.json({ Status: "Error", Error: "Correo electrónico o contraseña incorrectos" });
                 }
                 const token = jwt.sign({ role: "admin" }, "jwt-secret-key", { expiresIn: '1d' });
-                return res.json({ Status: "Success", Token: token });
+                return res.json({ 
+                    Status: "Success", 
+                    Token: token, 
+                    User: {
+                        id: user.id,
+                        email: user.email,
+                        role: user.Rol,
+                        // Puedes incluir otros datos del usuario que consideres necesarios
+                    }
+                });
             ;
         } else {
-            return res.json({ Status: "Error", Error: "Wrong Email or Password" });
+            return res.json({ Status: "Error", Error: "Correo electrónico o contraseña incorrectos" });
         }
     });
 };

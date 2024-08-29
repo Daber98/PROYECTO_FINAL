@@ -11,26 +11,41 @@ import fondo from "../../image/fondo.jpg"; // Importa la imagen de fondo
 const Habitacion = () => {
     return (
         <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
-            <Navbar/>
+            <Navbar />
             <h1 style={{ textAlign: 'center', marginTop: 100, marginBottom: 50, fontWeight: 'bold' }}>Reserva tu habitación</h1>
             <Box display="flex" justifyContent="center">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
-                    <Tarjeta titulo="Habitación Simple" contenido="¿Estás buscando un lugar cómodo y tranquilo para tu próxima escapada? ¡No busques más! Nuestra habitación individual es perfecta para viajeros solitarios que desean un espacio íntimo y acogedor para descansar."  imagen={image1}/>
-                    <Tarjeta titulo="Habitación Doble" contenido="¿Estás buscando un lugar cómodo y tranquilo para tu próxima escapada con un amigo o familiar? ¡No busques más! Nuestra habitación con dos camas individuales es perfecta para aquellos que desean un espacio acogedor para descansar y compartir momentos especiales juntos." imagen={image2}/>
-                    <Tarjeta titulo="Habitación Triple" contenido="¿Estás planeando una escapada con amigos o familiares? ¡Tenemos la solución perfecta para ti! Nuestra habitación con tres camas es ideal para grupos pequeños que buscan comodidad y conveniencia durante su estadía." imagen={image3}/>
+                    <Tarjeta 
+                        titulo="Habitación Simple" 
+                        contenido="¿Estás buscando un lugar cómodo y tranquilo para tu próxima escapada? ¡No busques más! Nuestra habitación individual es perfecta para viajeros solitarios que desean un espacio íntimo y acogedor para descansar."  
+                        imagen={image1} 
+                        precio="Precio: Q120/noche"
+                    />
+                    <Tarjeta 
+                        titulo="Habitación Doble" 
+                        contenido="¿Estás buscando un lugar cómodo y tranquilo para tu próxima escapada con un amigo o familiar? ¡No busques más! Nuestra habitación con dos camas individuales es perfecta para aquellos que desean un espacio acogedor para descansar y compartir momentos especiales juntos." 
+                        imagen={image2} 
+                        precio="Precio: Q150/noche"
+                    />
+                    <Tarjeta 
+                        titulo="Habitación Triple" 
+                        contenido="¿Estás planeando una escapada con amigos o familiares? ¡Tenemos la solución perfecta para ti! Nuestra habitación con tres camas es ideal para grupos pequeños que buscan comodidad y conveniencia durante su estadía." 
+                        imagen={image3} 
+                        precio="Precio: Q180/noche"
+                    />
                 </div>
             </Box>
         </div>
-    )
-}
+    );
+};
 
-const Tarjeta = ({ titulo, contenido, imagen}) => {
+const Tarjeta = ({ titulo, contenido, imagen, precio }) => {
     return (
-        <Card sx={{ maxWidth: 400, height: 450, marginBottom: '20px', borderRadius: 5 }}>
+        <Card sx={{ maxWidth: 400, height: 500, marginBottom: '20px', borderRadius: 5 }}>
             <CardMedia
                 component="img"
                 height="200"
-                image= {imagen}
+                image={imagen}
                 alt="Imagen de la habitación"
             />
             <CardContent>
@@ -40,14 +55,18 @@ const Tarjeta = ({ titulo, contenido, imagen}) => {
                 <Typography variant="body2" color="text.secondary">
                     {contenido}
                 </Typography>
+                <Typography variant="h6" color="text.primary" style={{ marginTop: '10px', fontWeight: 'bold' }}>
+                    {precio}
+                </Typography>
             </CardContent>
             <CardActions>
                 <Button component={Link} to="/login" size="small" color="primary">
                     Ver más
-                </Button >
+                </Button>
             </CardActions>
         </Card>
-    )
-}
+    );
+};
+
 
 export default Habitacion;

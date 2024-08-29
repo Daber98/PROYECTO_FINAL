@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavbarDashboard from "../NavbarDashboard";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import axios from 'axios';
 
 const UsuariosAdmin = () => {
@@ -8,6 +8,7 @@ const UsuariosAdmin = () => {
     const [editingUserId, setEditingUserId] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [editedData, setEditedData] = useState({});
+    const [selectedRole, setSelectedRole] = useState("cliente"); // Default to "cliente"
 
     useEffect(() => {
         axios.get('http://localhost:3001/usuario')
@@ -23,6 +24,7 @@ const UsuariosAdmin = () => {
         setEditingUserId(userId);
         const selectedUser = users.find(user => user.id_user === userId);
         setEditedData(selectedUser);
+        setSelectedRole(selectedUser.Rol || "cliente"); // Default to "cliente" if no role is provided
         setOpenDialog(true);
     };
 
@@ -31,10 +33,14 @@ const UsuariosAdmin = () => {
     };
 
     const handleSaveEdit = () => {
-        axios.put(`http://localhost:3001/usuario/${editingUserId}`, editedData)
+        axios.put(`http://localhost:3001/usuario/${editingUserId}`, { ...editedData, Rol: selectedRole })
             .then(response => {
                 if (response.data.Status === "Success") {
-                    setUsers(users.map(user => user.id_user === editingUserId ? { ...user, ...editedData } : user));
+                    setUsers(users.map(user => 
+                        user.id_user === editingUserId 
+                            ? { ...user, ...editedData, Rol: selectedRole } 
+                            : user
+                    ));
                     setOpenDialog(false);
                 }
             })
@@ -55,6 +61,10 @@ const UsuariosAdmin = () => {
             });
     };
 
+    const handleRoleChange = (event) => {
+        setSelectedRole(event.target.value);
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setEditedData({ ...editedData, [name]: value });
@@ -73,6 +83,7 @@ const UsuariosAdmin = () => {
                                 <TableCell style={{ fontWeight: "bold" }}>Apellido</TableCell>
                                 <TableCell style={{ fontWeight: "bold" }}>Email</TableCell>
                                 <TableCell style={{ fontWeight: "bold" }}>Teléfono</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Rol</TableCell>
                                 <TableCell style={{ fontWeight: "bold" }}>Acción</TableCell>
                             </TableRow>
                         </TableHead>
@@ -84,6 +95,7 @@ const UsuariosAdmin = () => {
                                     <TableCell>{user.last_name}</TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell>{user.phone}</TableCell>
+                                    <TableCell>{user.Rol === "cliente" ? "Cliente" : "Recepcionista"}</TableCell>
                                     <TableCell>
                                         <Button variant="contained" color="primary" onClick={() => handleEditUser(user.id_user)}>Editar</Button>
                                         <Button variant="contained" color="secondary" onClick={() => handleDeleteUser(user.id_user)}>Eliminar</Button>
@@ -138,6 +150,17 @@ const UsuariosAdmin = () => {
                         value={editedData.phone || ""}
                         onChange={handleInputChange}
                     />
+                    <FormControl component="fieldset">
+                        <RadioGroup
+                            aria-label="Rol"
+                            name="Rol"
+                            value={selectedRole}
+                            onChange={handleRoleChange}
+                        >
+                            <FormControlLabel value="cliente" control={<Radio />} label="Cliente" />
+                            <FormControlLabel value="recepcionista" control={<Radio />} label="Recepcionista" />
+                        </RadioGroup>
+                    </FormControl>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog}>Cancelar</Button>
