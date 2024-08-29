@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-import { Card, CardContent, TextField, Button, Typography, Link, Checkbox, FormControlLabel } from '@mui/material';
+import { Card, CardContent, TextField, Button, Typography, Link, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 import Navbar from '../home/Navbar.js'
 
@@ -16,6 +16,7 @@ const SignUp = () => {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
+    const [role, setRole] = useState(""); // Estado para el rol
     const [registerStatus, setRegisterStatus] = useState("");
 
     const register = (e) => {
@@ -26,6 +27,7 @@ const SignUp = () => {
             first_name: name,
             phone: phone,
             password: password,
+            Rol: role, // Enviar el rol seleccionado
         }).then((response) => {
             console.log(response);
             if(response.data.message){
@@ -43,9 +45,9 @@ const SignUp = () => {
                 <div className="container-fluid h-custom">
                     <div className="row d-flex justify-content-center align-items-center h-100">
                         <div className="col-md-7">
-                          <Card style={{ width: 600, height: 750, borderRadius: 15, marginTop: '-15px' }}> 
+                            <Card style={{ width: 600, height: 750, borderRadius: 15, marginTop: '-15px' }}> 
                                 <CardContent>
-                                    <Typography style={{ fontWeight: 'bold' }} variant="h5" component="h2" align="center" gutterBottom >Crea tu cuenta</Typography>
+                                    <Typography style={{ fontWeight: 'bold' }} variant="h5" component="h2" align="center" gutterBottom>Crea tu cuenta</Typography>
                                     {registerStatus && <Typography variant="subtitle1" color="error" align="center" gutterBottom>{registerStatus}</Typography>}
                                     <form onSubmit={register}>
                                         <TextField
@@ -98,6 +100,16 @@ const SignUp = () => {
                                             onChange={(e) => setPassword(e.target.value)}
                                             required
                                         />
+                                        <FormControl fullWidth margin="normal" required>
+                                            <InputLabel>Rol</InputLabel>
+                                            <Select
+                                                value={role}
+                                                onChange={(e) => setRole(e.target.value)}
+                                            >
+                                                <MenuItem value="Cliente">Cliente</MenuItem>
+                                                <MenuItem value="Administrador">Administrador</MenuItem>
+                                            </Select>
+                                        </FormControl>
                                         <FormControlLabel
                                             control={<Checkbox color="primary" />}
                                             label="Recordar"
