@@ -3,9 +3,9 @@ import axios from "axios";
 
 import { Card, CardContent, TextField, Button, Typography, Link, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
-import Navbar from '../home/Navbar.js'
+import Navbar from '../home/Navbar.js';
 
-import "../../css/Signup.css"
+import "../../css/Signup.css";
 
 import fondo from "../../image/fondo.jpg"; // Importa la imagen de fondo
 import villaImage from "../../image/Entrada.jpg";
@@ -30,13 +30,17 @@ const SignUp = () => {
             Rol: role, // Enviar el rol seleccionado
         }).then((response) => {
             console.log(response);
-            if(response.data.message){
-                setRegisterStatus(response.data.message);
-            }else{
+            if (response.data.Status === 'Error') {
+                // Mostrar el mensaje de error en caso de que el correo ya esté registrado
+                setRegisterStatus(response.data.Error);
+            } else {
                 setRegisterStatus("CUENTA CREADA EXITOSAMENTE");
             }
-        })
-    }
+        }).catch((error) => {
+            console.error(error);
+            setRegisterStatus("Hubo un problema con el registro. Por favor, intenta de nuevo más tarde.");
+        });
+    };
 
     return (
         <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
