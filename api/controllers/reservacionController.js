@@ -33,20 +33,38 @@ exports.getRoomByIdReservation = (req, res) => {
 
 // CREATE - Agregar una nueva reserva
 exports.createReservation = (req, res) => {
-    const { id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Monto, Telefono } = req.body;
-    const sql = "INSERT INTO reservacion (`id_usuario`, `id_habitacion`, `FechaEntrada`, `FechaSalida`, `Estado`, `EstadoPago`, `Monto`, `Telefono`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    const values = [id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Monto, Telefono];
-    con.query(sql, values, (err, result) => {
-        if (err) return res.json({ Error: "Error inserting data" });
-        return res.json({ Status: "Success", InsertId: result.insertId });
+    const { id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Telefono } = req.body;
+
+    // Consulta para obtener el monto de la habitación
+    const getPriceSql = "SELECT precioNoche FROM habitacion WHERE id_habitacio = ?";
+    
+    con.query(getPriceSql, [id_habitacion], (err, result) => {
+        if (err) return res.json({ Error: "Error fetching room price" });
+        
+        if (result.length > 0) {
+            const Monto = result[0].precioNoche;
+            console.log(Monto)
+            
+            // Inserción de la reservación con el monto obtenido
+            const sql = "INSERT INTO reservacion (`id_usuario`, `id_habitacion`, `FechaEntrada`, `FechaSalida`, `Estado`, `EstadoPago`, `Monto`, `Telefono`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            const values = [id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Monto, Telefono];
+            
+            con.query(sql, values, (err, result) => {
+                if (err) return res.json({ Error: "Error inserting data" });
+                return res.json({ Status: "Success", InsertId: result.insertId });
+            });
+        } else {
+            return res.json({ Error: "Room not found" });
+        }
     });
 };
+
 
 // UPDATE - Actualizar una reserva
 exports.updateReservation = (req, res) => {
     const reservationId = req.params.id;
     const { id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Monto, Telefono } = req.body;
-    const sql = "UPDATE reservacion SET id_usuario = ?, id_habitacion = ?, FechaEntrada = ?, FechaSalida = ?, Estado = ?, EstadoPago = ?, Monto = ?, Telefono = ? WHERE id_reservacio = ?";
+    const sql = "UPDATE reservacion SET id_usuario = ?, id_habitacio = ?, FechaEntrada = ?, FechaSalida = ?, Estado = ?, EstadoPago = ?, Monto = ?, Telefono = ? WHERE id_reservacio = ?";
     const values = [id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Monto, Telefono, reservationId];
     con.query(sql, values, (err, result) => {
         if (err) return res.json({ Error: "Error updating data" });
