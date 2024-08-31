@@ -33,6 +33,7 @@ app.delete('/habitacion/:id', habitacionController.deleteRoom);
 app.get('/reservacion', reservacionController.getAllReservations);
 app.get('/reservacion/:id', reservacionController.getReservationById);
 app.get('/reservacion/habitacion/:id', reservacionController.getRoomByIdReservation);
+app.get('/reservacion/user/:id', reservacionController.getReservationsByUserId);
 app.post('/reservacion', reservacionController.createReservation);
 app.put('/reservacion/:id', reservacionController.updateReservation);
 app.delete('/reservacion/:id', reservacionController.deleteReservation);

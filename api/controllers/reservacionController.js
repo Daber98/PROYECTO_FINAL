@@ -81,3 +81,14 @@ exports.deleteReservation = (req, res) => {
         return res.json({ Status: "Success" });
     });
 };
+
+// READ - Obtener todas las reservas de un usuario por ID
+exports.getReservationsByUserId = (req, res) => {
+    const userId = req.params.id;
+    const sql = "SELECT * FROM reservacion WHERE id_usuario = ?";
+    con.query(sql, userId, (err, result) => {
+        if (err) return res.json({ Error: "Error fetching data" });
+        if (result.length === 0) return res.json({ Error: "No reservations found for this user" });
+        return res.json({ Reservations: result });
+    });
+};
