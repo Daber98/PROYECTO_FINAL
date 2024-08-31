@@ -18,7 +18,11 @@ exports.login = (req, res) => {
                 if (!passwordHash) {
                     return res.json({ Status: "Error", Error: "Correo electrónico o contraseña incorrectos" });
                 }
-                const token = jwt.sign({ role: "admin" }, "jwt-secret-key", { expiresIn: '1d' });
+                const token = jwt.sign({ 
+                    id: user.id,  // Include user ID in the token
+                    role: user.Rol 
+                }, "jwt-secret-key", { expiresIn: '1d' });
+                
                 return res.json({ 
                     Status: "Success", 
                     Token: token, 
