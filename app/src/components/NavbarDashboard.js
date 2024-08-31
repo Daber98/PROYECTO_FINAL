@@ -80,7 +80,7 @@ const NavbarDashboard = () => {
                             <a className="nav-link" href="./habitaciones">Habitaciones</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="./reservaciones">Reservacion</a>
+                            <a className="nav-link" href="./reservaciones-usuario">Reservaciones</a>
                         </li>
                     </ul>
                     <div className="d-flex">

@@ -14,6 +14,7 @@ import HabitacionesAdmin from "./components/habitacion/HabitacionesAdmin.js"
 
 import Reservaciones from "./components/reservaciones/Reservaciones.js"; // Reservaciones
 import ReservacionesAdmin from "./components/reservaciones/ReservacionesAdmin.js";
+import ReservacionesUsuario from "./components/reservaciones/ReservacionesUsuario.js";
 
 import UsuariosAdmin from "./components/usuarios/UsuariosAdmin.js"; // usuarios
 import NavbarDashboardAdmin from "./components/administrador/NavbarDashboardAdmin.js";
@@ -63,6 +64,13 @@ function App() {
                 element={
                   <RequireToken>
                     <ReservacionesAdmin />
+                  </RequireToken>
+                }
+              />
+              <Route path="/reservaciones-usuario"
+                element={
+                  <RequireToken>
+                    <ReservacionesUsuario />
                   </RequireToken>
                 }
               />

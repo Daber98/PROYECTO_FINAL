@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Card, CardContent, Typography, TextField, Button, Grid } from "@mui/material";
+import { Box, Card, CardContent, Typography, TextField, Button, Grid, Snackbar, Alert } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -7,6 +7,7 @@ import { TimePicker } from '@mui/lab';
 import dayjs from 'dayjs';
 import Navbar from "../NavbarDashboard";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import fondo from "../../image/fondo.jpg";
 
 const Reservaciones = () => {
@@ -19,15 +20,30 @@ const Reservaciones = () => {
     arrivalTime: null,
     departureDate: null,
     departureTime: null,
-    roomId: null, // Agrega roomId al estado
+    roomId: null,
   });
 
+  const [price, setPrice] = useState(""); 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // "success", "error", "warning", "info"
+  const navigate = useNavigate(); // Hook para redirigir
+
+
   useEffect(() => {
-    // Obtener el ID de la habitación del URL
     const params = new URLSearchParams(window.location.search);
     const roomId = params.get("habitacion");
     setFormData({ ...formData, roomId: roomId });
-  }, []); // Se ejecuta solo una vez al montar el componente
+
+    if (roomId) {
+      axios.get(`http://localhost:3001/habitacion/${roomId}`)
+        .then(response => {
+          setPrice(response.data.Room.precioNoche);
+          console.log(response.data.Room.precioNoche)
+        })
+        .catch(error => console.error('Error fetching room price:', error));
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,19 +69,38 @@ const Reservaciones = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3001/reservacion', {
-        id_usuario: 1, // ID de usuario fijo
+        id_usuario: 1, 
         id_habitacion: formData.roomId,
         FechaEntrada: formData.arrivalDate,
         FechaSalida: formData.departureDate,
         Estado: "Pendiente",
-        EstadoPago: "Pendiente",
-        Monto: formData.ammount,
+        EstadoPago: "0",
+        Monto: price,
         Telefono: formData.phone
       });
-      console.log('ID de la nueva reservación:', response.data.InsertId);
+
+      if (response.data.Status === 'Success') {
+        setSnackbarSeverity("success");
+        setSnackbarMessage("¡Reservación realizada con éxito!");
+        setSnackbarOpen(true);
+        setTimeout(() => {
+        navigate('/reservaciones-usuario'); // Redirige a la página de reservaciones de usuario
+        }, 2000);
+      } else {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Hubo un problema al realizar la reservación.");
+      }
     } catch (error) {
       console.error('Error:', error);
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Error al conectarse con el servidor.");
     }
+
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -127,6 +162,15 @@ const Reservaciones = () => {
                     onChange={handleInputChange}
                     disabled
                   />
+                  <TextField
+                    label="Precio por Noche"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    name="price"
+                    value={price}
+                    disabled
+                  />
                   <div style={{marginTop: 25, marginLeft: 175}}>
                     <LocalizationProvider dateAdapter={AdapterDayjs} >
                       <DatePicker
@@ -168,6 +212,17 @@ const Reservaciones = () => {
           </Grid>
         </Grid>
       </Box>
+
+      {/* Snackbar de verificación */}
+      <Snackbar 
+        open={snackbarOpen} 
+        autoHideDuration={6000} 
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
