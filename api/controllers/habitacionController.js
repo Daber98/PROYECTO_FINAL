@@ -1,5 +1,12 @@
 const con = require('../database/mysqlConnection');
 const multer = require('multer');
+const fs = require('fs');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+// Configurar Multer para almacenar las imágenes en el directorio 'uploads/'
 const upload = multer({ dest: 'uploads/' });
 
 // READ - Obtener todas las habitacion
@@ -26,10 +33,24 @@ exports.getRoomById = (req, res) => {
 exports.createRoom = [
     upload.single('imagen'), // Middleware para manejar la carga de archivos
     (req, res) => {
+        if (!req.file) {
+            return res.status(400).json({ error: "File is required" });
+        }
+
+        const { originalname, path } = req.file;
+        const parts = originalname.split(".");
+        const ext = parts[parts.length - 1];
+        const newPath = path + "." + ext;
+
+        try {
+            fs.renameSync(path, newPath);
+        } catch (error) {
+            return res.status(500).json({ error: "Failed to rename file" });
+        }
+
         const { tipo, precioNoche, disponible } = req.body;
-        const imagen = req.file.path; // Obtén la ruta del archivo de imagen subido
         const sql = "INSERT INTO habitacion (`tipo`, `precioNoche`, `disponible`, `imagen`) VALUES (?, ?, ?, ?)";
-        const values = [tipo, precioNoche, disponible, imagen];
+        const values = [tipo, precioNoche, disponible, newPath];
         con.query(sql, values, (err, result) => {
             if (err) return res.json({ Error: "Error inserting data" });
             return res.json({ Status: "Success", InsertId: result.insertId });
@@ -38,16 +59,33 @@ exports.createRoom = [
 ];
 
 // UPDATE - Actualizar una habitación
-exports.updateRoom = (req, res) => {
-    const roomId = req.params.id;
-    const { tipo, precioNoche, disponible } = req.body;
-    const sql = "UPDATE habitacion SET tipo = ?, precioNoche = ?, disponible = ? WHERE id_habitacio = ?";
-    const values = [tipo, precioNoche, disponible, roomId];
-    con.query(sql, values, (err, result) => {
-        if (err) return res.json({ Error: "Error updating data" });
-        return res.json({ Status: "Success" });
-    });
-};
+exports.updateRoom = [
+    upload.single('imagen'), // Middleware para manejar la carga de archivos (opcional)
+    (req, res) => {
+        const roomId = req.params.id;
+        const { tipo, precioNoche, disponible } = req.body;
+        let newPath = null;
+
+        if (req.file) {
+            const { originalname, path } = req.file;
+            const parts = originalname.split(".");
+            const ext = parts[parts.length - 1];
+            newPath = path + "." + ext;
+            try {
+                fs.renameSync(path, newPath);
+            } catch (error) {
+                return res.status(500).json({ error: "Failed to rename file" });
+            }
+        }
+
+        const sql = "UPDATE habitacion SET tipo = ?, precioNoche = ?, disponible = ?, imagen = ? WHERE id_habitacio = ?";
+        const values = [tipo, precioNoche, disponible, newPath || req.body.imagen, roomId];
+        con.query(sql, values, (err, result) => {
+            if (err) return res.json({ Error: "Error updating data" });
+            return res.json({ Status: "Success" });
+        });
+    }
+];
 
 // DELETE - Eliminar una habitación
 exports.deleteRoom = (req, res) => {

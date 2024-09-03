@@ -23,22 +23,13 @@ const Habitaciones = () => {
             });
     }, []);
 
-    const obtenerImagenPorId = (habitacionId) => {
-        const habitacion = habitaciones.find(habitacion => habitacion.id_habitacio === habitacionId);
-        if (habitacion && habitacion.imagen) {
-            const blob = new Blob([new Uint8Array(habitacion.imagen.data)], { type: 'image/jpeg' });
-            return URL.createObjectURL(blob);
-        } else {
-            return '';
-        }
-    };
 
     const generarTarjetas = (tipo) => {
         return habitacionesCargadas && habitaciones
             .filter(habitacion => habitacion.tipo === tipo)
             .map((habitacion, index) => (
                 <Grid item xs={4} key={`${tipo}-${index}`}>
-                    <Tarjeta habitacion={habitacion} obtenerImagenPorId={obtenerImagenPorId} />
+                    <Tarjeta habitacion={habitacion} />
                 </Grid>
             ));
     };
@@ -70,19 +61,15 @@ const Habitaciones = () => {
     );
 }
 
-const Tarjeta = ({ habitacion, obtenerImagenPorId }) => {
-    const [imagen, setImagen] = useState('');
-
-    useEffect(() => {
-        const imagenHabitacion = obtenerImagenPorId(habitacion.id_habitacio);
-        setImagen(imagenHabitacion);
-    }, [habitacion, obtenerImagenPorId]);
+const Tarjeta = ({ habitacion }) => {
+    // Construye la URL completa de la imagen
+    const imagenUrl = `http://localhost:3001/${habitacion.imagen}`;
 
     return (
         <Card sx={{ width: 500, marginBottom: '30px', marginLeft: 10, marginRight: 10 }}>
             <CardMedia
                 component="img"
-                image={imagen} 
+                image={imagenUrl} 
                 alt="Imagen de la habitación"
             />
             <CardContent>
@@ -99,12 +86,12 @@ const Tarjeta = ({ habitacion, obtenerImagenPorId }) => {
                     href={`/Reservaciones?habitacion=${habitacion.id_habitacio}`}
                     size="small"
                     color="primary"
-                    >
+                >
                     Ver más
                 </Button>
             </CardActions>
         </Card>
     );
-}
+};
 
 export default Habitaciones;
