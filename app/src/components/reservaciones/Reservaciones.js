@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Card, CardContent, Typography, TextField, Button, Grid, Snackbar, Alert } from "@mui/material";
+import { Box, Card, CardContent, Typography, TextField, Button, Grid, Snackbar, Alert, CardMedia } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -23,12 +23,12 @@ const Reservaciones = () => {
     roomId: null,
   });
 
-  const [price, setPrice] = useState(""); 
+  const [price, setPrice] = useState("");
+  const [roomImage, setRoomImage] = useState(""); // Estado para almacenar la URL de la imagen
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // "success", "error", "warning", "info"
-  const navigate = useNavigate(); // Hook para redirigir
-
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -39,9 +39,9 @@ const Reservaciones = () => {
       axios.get(`http://localhost:3001/habitacion/${roomId}`)
         .then(response => {
           setPrice(response.data.Room.precioNoche);
-          console.log(response.data.Room.precioNoche)
+          setRoomImage(`http://localhost:3001/${response.data.Room.imagen}`); // Asignar la URL completa de la imagen
         })
-        .catch(error => console.error('Error fetching room price:', error));
+        .catch(error => console.error('Error fetching room price and image:', error));
     }
   }, []);
 
@@ -69,7 +69,7 @@ const Reservaciones = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3001/reservacion', {
-        id_usuario: 1, 
+        id_usuario: 1,
         id_habitacion: formData.roomId,
         FechaEntrada: formData.arrivalDate,
         FechaSalida: formData.departureDate,
@@ -84,7 +84,7 @@ const Reservaciones = () => {
         setSnackbarMessage("¡Reservación realizada con éxito!");
         setSnackbarOpen(true);
         setTimeout(() => {
-        navigate('/reservaciones-usuario'); // Redirige a la página de reservaciones de usuario
+          navigate('/reservaciones-usuario');
         }, 2000);
       } else {
         setSnackbarSeverity("error");
@@ -105,15 +105,22 @@ const Reservaciones = () => {
 
   return (
     <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', backgroundRepeat: 'no-repeat' }}>
-      <Navbar/>
+      <Navbar />
       <Box m={2}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <Card>
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                  Imágenes de la Habitación
+                  Imágen de la Habitación
                 </Typography>
+                {roomImage && (
+                  <CardMedia
+                    component="img"
+                    image={roomImage} // Mostrar la imagen de la habitación
+                    alt="Imagen de la habitación"
+                  />
+                )}
               </CardContent>
             </Card>
           </Grid>
@@ -171,11 +178,11 @@ const Reservaciones = () => {
                     value={price}
                     disabled
                   />
-                  <div style={{marginTop: 25, marginLeft: 175}}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs} >
+                  <div style={{ marginTop: 25, marginLeft: 175 }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         label="Fecha de llegada"
-                        style={{margin: 25}}
+                        style={{ margin: 25 }}
                         value={dayjs(formData.arrivalDate)}
                         onChange={(newValue) => handleArrivalDateChange(newValue?.toDate())}
                         renderInput={(params) => <TextField {...params} margin="normal" fullWidth />}
@@ -188,7 +195,7 @@ const Reservaciones = () => {
                       />
                       <DatePicker
                         label="Fecha de salida"
-                        style={{margin: 25}}
+                        style={{ margin: 25 }}
                         value={dayjs(formData.departureDate)}
                         onChange={(newValue) => handleDepartureDateChange(newValue?.toDate())}
                         renderInput={(params) => <TextField {...params} margin="normal" fullWidth />}
@@ -201,8 +208,6 @@ const Reservaciones = () => {
                       />
                     </LocalizationProvider>
                   </div>
-                  <LocalizationProvider>
-                    </ LocalizationProvider>
                   <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: 120, fontWeight: 'bold', width: '75%', marginLeft: '110px' }}>
                     Reservar habitación
                   </Button>
@@ -214,9 +219,9 @@ const Reservaciones = () => {
       </Box>
 
       {/* Snackbar de verificación */}
-      <Snackbar 
-        open={snackbarOpen} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>

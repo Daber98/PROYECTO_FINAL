@@ -66,7 +66,7 @@ const Tarjeta = ({ habitacion }) => {
     const imagenUrl = `http://localhost:3001/${habitacion.imagen}`;
 
     return (
-        <Card sx={{ width: 500, marginBottom: '30px', marginLeft: 10, marginRight: 10 }}>
+        <Card sx={{ width: 425, marginBottom: '30px', marginLeft: 5, marginRight: 5 }}>
             <CardMedia
                 component="img"
                 image={imagenUrl} 

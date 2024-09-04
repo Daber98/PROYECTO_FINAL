@@ -58,17 +58,31 @@ const HabitacionesAdmin = () => {
     };
 
     const handleSaveEdit = () => {
-        axios.put(`http://localhost:3001/habitacion/${editingHabitacionId}`, editedData)
+        const formData = new FormData();
+        formData.append("tipo", editedData.tipo);
+        formData.append("precioNoche", editedData.precioNoche);
+        formData.append("disponible", editedData.disponible);
+        if (selectedImage) {
+            formData.append("imagen", selectedImage);
+        }
+    
+        axios.put(`http://localhost:3001/habitacion/${editingHabitacionId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
             .then(response => {
                 if (response.data.Status === "Success") {
                     setHabitaciones(habitaciones.map(habitacion => habitacion.id_habitacio === editingHabitacionId ? { ...habitacion, ...editedData } : habitacion));
                     setOpenEditDialog(false);
+                    setSelectedImage(null); // Reset selected image after save
                 }
             })
             .catch(error => {
                 console.error('Error updating habitacion:', error);
             });
     };
+    
 
     const handleDeleteHabitacion = (habitacionId) => {
         fetch(`http://localhost:3001/habitacion/${habitacionId}`, {
@@ -204,6 +218,18 @@ const HabitacionesAdmin = () => {
                         value={editedData.disponible || ""}
                         onChange={handleInputChange}
                     />
+                    <input
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id="edit-image-upload"
+                        type="file"
+                        onChange={(e) => setSelectedImage(e.target.files[0])}
+                    />
+                    <label htmlFor="edit-image-upload">
+                        <Button variant="contained" color="primary" component="span">
+                            Seleccionar Nueva Imagen
+                        </Button>
+                    </label>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseEditDialog}>Cancelar</Button>
