@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom'
-
-import { setToken } from '../hooks/Auth.js'
-import Navbar from '../home/Navbar.js'
-
+import { useNavigate } from 'react-router-dom';
+import { setToken } from '../hooks/Auth.js';
+import Navbar from '../home/Navbar.js';
 import { Card, CardContent, TextField, Button, Typography, Link, Checkbox, FormControlLabel } from '@mui/material';
-
-import "../../css/Login.css"
-
-import fondo from "../../image/fondo.jpg"; // Importa la imagen de fondo
+import "../../css/Login.css";
+import fondo from "../../image/fondo.jpg";
 import villaImage from "../../image/Entrada.jpg";
 
 const Login = () => {
@@ -21,23 +17,29 @@ const Login = () => {
 
     const login = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:3001/login", {
-            email: email,
-            password: password,
-        })
+        axios.post("http://localhost:3001/login", { email, password })
         .then(res => {
             console.log(res);
             if(res.data.Status === 'Success') {
                 console.log(res.data.Token);
-                setToken(res.data.Token)
-                navigate('/profile');
+                setToken(res.data.Token);
+
+                // Check the role and redirect based on it
+                if(res.data.User.role === 'administrador') {
+                    navigate('/Dashboard-admin'); // Redirect to admin dashboard
+                } else if (res.data.User.role === 'cliente') {
+                    navigate('/profile'); // Redirect to client profile
+                }
             } else {
                 setError(res.data.Error);
             }
         })
-        .catch(err => console.log(err));
-    }
-    
+        .catch(err => {
+            console.log(err);
+            setError("Error al intentar iniciar sesión.");
+        });
+    };
+
     return (
         <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
             <Navbar/>
@@ -45,7 +47,7 @@ const Login = () => {
                 <div className="container-fluid h-custom">
                     <div className="row d-flex justify-content-center align-items-center h-100">
                         <div className="col-md-9 col-lg-6 col-xl-5">
-                            <img src={villaImage} className="imagen-login" style={{  }} alt="Villa de la imagen de entrada" />
+                            <img src={villaImage} className="imagen-login" alt="Villa de la imagen de entrada" />
                         </div>
                         <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                             <Card style={{ width: 600, height: 750, borderRadius: 15, marginTop: '-15px' }}> 

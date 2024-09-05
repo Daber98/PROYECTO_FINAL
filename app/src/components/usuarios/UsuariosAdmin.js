@@ -95,7 +95,7 @@ const UsuariosAdmin = () => {
                                     <TableCell>{user.last_name}</TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell>{user.phone}</TableCell>
-                                    <TableCell>{user.Rol === "cliente" ? "Cliente" : "Recepcionista"}</TableCell>
+                                    <TableCell>{user.Rol === "cliente" ? "Cliente" : "administrador"}</TableCell>
                                     <TableCell>
                                         <Button variant="contained" color="primary" onClick={() => handleEditUser(user.id_user)}>Editar</Button>
                                         <Button variant="contained" color="secondary" onClick={() => handleDeleteUser(user.id_user)}>Eliminar</Button>
@@ -158,7 +158,7 @@ const UsuariosAdmin = () => {
                             onChange={handleRoleChange}
                         >
                             <FormControlLabel value="cliente" control={<Radio />} label="Cliente" />
-                            <FormControlLabel value="recepcionista" control={<Radio />} label="Recepcionista" />
+                            <FormControlLabel value="administrador" control={<Radio />} label="Administrador" />
                         </RadioGroup>
                     </FormControl>
                 </DialogContent>
