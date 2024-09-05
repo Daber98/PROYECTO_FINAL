@@ -2,15 +2,16 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { Home, Hotel, Book, People } from '@mui/icons-material';
+import NavbarAdmin from './NavbarAdmin'; // Import the NavbarAdmin component
 
-const NavbarDashboardAdmin = () => {
+const HomeAdmin = () => {
     const navigate = useNavigate();
 
     const list = () => (
         <Box sx={{ width: 250 }}>
             <List>
                 {[
-                    { text: 'Inicio', icon: <Home />, link: '/profile' },
+                    { text: 'Inicio', icon: <Home />, link: '/Home-admin' },
                     { text: 'Habitación', icon: <Hotel />, link: '/habitaciones-admin' },
                     { text: 'Reservación', icon: <Book />, link: '/reservaciones-admin' },
                     { text: 'Usuarios', icon: <People />, link: '/usuarios-admin' }
@@ -28,7 +29,12 @@ const NavbarDashboardAdmin = () => {
         </Box>
     );
 
-    return list();
+    return (
+        <>
+            <NavbarAdmin /> {/* Add the NavbarAdmin component */}
+            {list()}
+        </>
+    );
 };
 
-export default NavbarDashboardAdmin;
+export default HomeAdmin;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import NavbarDashboard from "../NavbarDashboard";
+import NavbarAdmin from "../administrador/NavbarAdmin";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import axios from 'axios';
 
@@ -72,7 +72,7 @@ const UsuariosAdmin = () => {
 
     return (
         <div style={{ backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
-            <NavbarDashboard />
+            <NavbarAdmin />
             <div style={{ margin: 30 }}>
                 <TableContainer component={Paper}>
                     <Table>

@@ -17,7 +17,7 @@ import ReservacionesAdmin from "./components/reservaciones/ReservacionesAdmin.js
 import ReservacionesUsuario from "./components/reservaciones/ReservacionesUsuario.js";
 
 import UsuariosAdmin from "./components/usuarios/UsuariosAdmin.js"; // usuarios
-import NavbarDashboardAdmin from "./components/administrador/NavbarDashboardAdmin.js";
+import HomeAdmin from "./components/administrador/HomeAdmin.js";
  
 import {RequireToken} from "./../src/components/hooks/Auth.js"; // Obtención del token para validarlo en la ruta
 
@@ -81,10 +81,10 @@ function App() {
                   </RequireToken>
                 }
               />
-              <Route path="/Dashboard-admin"
+              <Route path="/Home-admin"
                 element={
                   <RequireToken>
-                    <NavbarDashboardAdmin />
+                    <HomeAdmin />
                   </RequireToken>
                 }
               />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import NavbarDashboard from "../NavbarDashboard";
+import NavbarAdmin from "../administrador/NavbarAdmin";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import axios from 'axios';
 
@@ -105,7 +105,7 @@ const ReservacionesAdmin = () => {
 
     return (
         <div style={{ backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
-            <NavbarDashboard />
+            <NavbarAdmin />
             <div style={{ margin: 30 }}>
                 <Button variant="contained" color="primary" onClick={() => setOpenCreateDialog(true)} style={{ marginLeft: 15, marginBottom: 15 }}>Crear Reservación</Button>
                 <TableContainer component={Paper}>

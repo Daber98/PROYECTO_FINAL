@@ -26,7 +26,7 @@ const Login = () => {
 
                 // Check the role and redirect based on it
                 if(res.data.User.role === 'administrador') {
-                    navigate('/Dashboard-admin'); // Redirect to admin dashboard
+                    navigate('/Home-admin'); // Redirect to admin dashboard
                 } else if (res.data.User.role === 'cliente') {
                     navigate('/profile'); // Redirect to client profile
                 }
