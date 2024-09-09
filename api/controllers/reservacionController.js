@@ -35,29 +35,42 @@ exports.getRoomByIdReservation = (req, res) => {
 exports.createReservation = (req, res) => {
     const { id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Telefono } = req.body;
 
-    // Consulta para obtener el monto de la habitación
-    const getPriceSql = "SELECT precioNoche FROM habitacion WHERE id_habitacio = ?";
+    // Consulta para obtener el precio y la disponibilidad de la habitación
+    const getRoomDetailsSql = "SELECT precioNoche, disponible FROM habitacion WHERE id_habitacio = ?";
     
-    con.query(getPriceSql, [id_habitacion], (err, result) => {
-        if (err) return res.json({ Error: "Error fetching room price" });
+    con.query(getRoomDetailsSql, [id_habitacion], (err, result) => {
+        if (err) return res.json({ Error: "Error fetching room details" });
         
         if (result.length > 0) {
-            const Monto = result[0].precioNoche;
-            console.log(Monto)
-            
+            const { precioNoche, disponible } = result[0];
+
+            // Verificar si la habitación está disponible
+            if (disponible === 0) {
+                return res.json({ Error: "La habitación no está disponible" });
+            }
+
             // Inserción de la reservación con el monto obtenido
-            const sql = "INSERT INTO reservacion (`id_usuario`, `id_habitacion`, `FechaEntrada`, `FechaSalida`, `Estado`, `EstadoPago`, `Monto`, `Telefono`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            const values = [id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Monto, Telefono];
+            const insertReservationSql = "INSERT INTO reservacion (`id_usuario`, `id_habitacion`, `FechaEntrada`, `FechaSalida`, `Estado`, `EstadoPago`, `Monto`, `Telefono`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            const values = [id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, precioNoche, Telefono];
             
-            con.query(sql, values, (err, result) => {
-                if (err) return res.json({ Error: "Error inserting data" });
-                return res.json({ Status: "Success", InsertId: result.insertId });
+            con.query(insertReservationSql, values, (err, result) => {
+                if (err) return res.json({ Error: "Error inserting reservation data" });
+
+                // Actualizar la disponibilidad de la habitación a 0 (no disponible)
+                const updateAvailabilitySql = "UPDATE habitacion SET disponible = 0 WHERE id_habitacio = ?";
+                
+                con.query(updateAvailabilitySql, [id_habitacion], (err, updateResult) => {
+                    if (err) return res.json({ Error: "Error updating room availability" });
+                    return res.json({ Status: "Success", InsertId: result.insertId });
+                });
             });
         } else {
             return res.json({ Error: "Room not found" });
         }
     });
 };
+
+
 
 
 // UPDATE - Actualizar una reserva

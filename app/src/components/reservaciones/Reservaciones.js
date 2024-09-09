@@ -88,7 +88,7 @@ const Reservaciones = () => {
         }, 2000);
       } else {
         setSnackbarSeverity("error");
-        setSnackbarMessage("Hubo un problema al realizar la reservación.");
+        setSnackbarMessage("Hubo un problema al realizar la reservación o la habitacion ya esta reservada.");
       }
     } catch (error) {
       console.error('Error:', error);
