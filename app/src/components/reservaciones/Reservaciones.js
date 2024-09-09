@@ -28,6 +28,8 @@ const Reservaciones = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [arrivalDateError, setArrivalDateError] = useState("");
+  const [departureDateError, setDepartureDateError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,6 +53,12 @@ const Reservaciones = () => {
 
   const handleArrivalDateChange = (date) => {
     setFormData({ ...formData, arrivalDate: date });
+
+    if (date && formData.departureDate && dayjs(date).isAfter(dayjs(formData.departureDate))) {
+      setArrivalDateError("La fecha de llegada no puede ser después de la fecha de salida.");
+    } else {
+      setArrivalDateError("");
+    }
   };
 
   const handleArrivalTimeChange = (time) => {
@@ -59,6 +67,12 @@ const Reservaciones = () => {
 
   const handleDepartureDateChange = (date) => {
     setFormData({ ...formData, departureDate: date });
+
+    if (date && formData.arrivalDate && dayjs(date).isBefore(dayjs(formData.arrivalDate))) {
+      setDepartureDateError("La fecha de salida no puede ser antes de la fecha de llegada.");
+    } else {
+      setDepartureDateError("");
+    }
   };
 
   const handleDepartureTimeChange = (time) => {
@@ -67,6 +81,13 @@ const Reservaciones = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (arrivalDateError || departureDateError) {
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Por favor, corrige los errores en las fechas.");
+      setSnackbarOpen(true);
+      return;
+    }
+    
     try {
       const response = await axios.post('http://localhost:3001/reservacion', {
         id_usuario: 1,
@@ -88,7 +109,7 @@ const Reservaciones = () => {
         }, 2000);
       } else {
         setSnackbarSeverity("error");
-        setSnackbarMessage("Hubo un problema al realizar la reservación o la habitacion ya esta reservada.");
+        setSnackbarMessage("Hubo un problema al realizar la reservación o la habitación ya está reservada.");
       }
     } catch (error) {
       console.error('Error:', error);
@@ -185,7 +206,15 @@ const Reservaciones = () => {
                         style={{ margin: 25 }}
                         value={dayjs(formData.arrivalDate)}
                         onChange={(newValue) => handleArrivalDateChange(newValue?.toDate())}
-                        renderInput={(params) => <TextField {...params} margin="normal" fullWidth />}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            margin="normal"
+                            fullWidth
+                            error={!!arrivalDateError}
+                            helperText={arrivalDateError}
+                          />
+                        )}
                       />
                       <TimePicker
                         label="Hora de llegada"
@@ -198,7 +227,15 @@ const Reservaciones = () => {
                         style={{ margin: 25 }}
                         value={dayjs(formData.departureDate)}
                         onChange={(newValue) => handleDepartureDateChange(newValue?.toDate())}
-                        renderInput={(params) => <TextField {...params} margin="normal" fullWidth />}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            margin="normal"
+                            fullWidth
+                            error={!!departureDateError}
+                            helperText={departureDateError}
+                          />
+                        )}
                       />
                       <TimePicker
                         label="Hora de salida"

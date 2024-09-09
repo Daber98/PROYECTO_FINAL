@@ -77,13 +77,32 @@ exports.createReservation = (req, res) => {
 exports.updateReservation = (req, res) => {
     const reservationId = req.params.id;
     const { id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Monto, Telefono } = req.body;
-    const sql = "UPDATE reservacion SET id_usuario = ?, id_habitacio = ?, FechaEntrada = ?, FechaSalida = ?, Estado = ?, EstadoPago = ?, Monto = ?, Telefono = ? WHERE id_reservacio = ?";
-    const values = [id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Monto, Telefono, reservationId];
-    con.query(sql, values, (err, result) => {
-        if (err) return res.json({ Error: "Error updating data" });
-        return res.json({ Status: "Success" });
+
+    // Primero, actualiza la reservación
+    const updateReservationSql = "UPDATE reservacion SET id_usuario = ?, id_habitacion = ?, FechaEntrada = ?, FechaSalida = ?, Estado = ?, EstadoPago = ?, Monto = ?, Telefono = ? WHERE id_reservacio = ?";
+    const reservationValues = [id_usuario, id_habitacion, FechaEntrada, FechaSalida, Estado, EstadoPago, Monto, Telefono, reservationId];
+
+    con.query(updateReservationSql, reservationValues, (err, result) => {
+        if (err) {
+            console.error("Error updating reservation:", err);
+            return res.json({ Error: "Error updating reservation data" });
+        }
+
+        // Luego, actualiza la disponibilidad de la habitación
+        const updateRoomAvailabilitySql = "UPDATE habitacion SET disponible = 1 WHERE id_habitacio = ?";
+
+        con.query(updateRoomAvailabilitySql, [id_habitacion], (err, result) => {
+            if (err) {
+                console.error("Error updating room availability:", err);
+                return res.json({ Error: "Error updating room availability" });
+            }
+
+            // Enviar respuesta exitosa si ambas consultas se ejecutaron sin errores
+            res.json({ Status: "Success" });
+        });
     });
 };
+
 
 // DELETE - Eliminar una reserva
 exports.deleteReservation = (req, res) => {
