@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Card, CardContent, CardActions, CardMedia, Typography, Button, Grid } from '@mui/material';
 import Navbar from '../NavbarDashboard';
+import NavbarHome from '../home/Navbar';
 import fondo from "../../image/fondo.jpg"; // Importa la imagen de fondo
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -9,8 +10,15 @@ const Habitaciones = () => {
     const [habitaciones, setHabitaciones] = useState([]);
     const [habitacionSeleccionada, setHabitacionSeleccionada] = useState("Habitaciones simples");
     const [habitacionesCargadas, setHabitacionesCargadas] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para saber si el usuario está logueado
 
     useEffect(() => {
+        // Verificar si el usuario está logueado
+        const token = localStorage.getItem('Token');
+        if (token) {
+            setIsLoggedIn(true); // Usuario logueado
+        }
+
         // Realizar la solicitud para obtener las habitaciones del servidor
         fetch('http://localhost:3001/habitacion')
             .then(response => response.json())
@@ -22,7 +30,6 @@ const Habitaciones = () => {
                 console.error('Error fetching habitaciones:', error);
             });
     }, []);
-
 
     const generarTarjetas = (tipo) => {
         return habitacionesCargadas && habitaciones
@@ -36,7 +43,7 @@ const Habitaciones = () => {
 
     return (
         <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', backgroundRepeat: 'no-repeat' }}>
-            <Navbar />
+            {isLoggedIn ? <Navbar /> : <NavbarHome />} {/* Renderiza Navbar o NavbarHome */}
             <h1 style={{ textAlign: 'center' }}>Reserva tu Habitación</h1>
             <Box display="flex" justifyContent="center" mb={2}>
                 <Autocomplete

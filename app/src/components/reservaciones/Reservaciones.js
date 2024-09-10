@@ -6,10 +6,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import Navbar from "../NavbarDashboard";
+import NavbarHome from '../home/Navbar';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import fondo from "../../image/fondo.jpg";
-import { fetchToken, RequireToken } from "../hooks/Auth";
+import { fetchToken } from "../hooks/Auth"; // Asegúrate de tener este hook o función para obtener el token
 
 const Reservaciones = () => {
   const [formData, setFormData] = useState({
@@ -30,9 +31,16 @@ const Reservaciones = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [arrivalDateError, setArrivalDateError] = useState("");
   const [departureDateError, setDepartureDateError] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para verificar si el usuario está logueado
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Verificar si el usuario está logueado
+    const token = fetchToken(); // Obtén el token del localStorage
+    if (token) {
+      setIsLoggedIn(true); // Usuario logueado
+    }
+
     const params = new URLSearchParams(window.location.search);
     const roomId = params.get("habitacion");
     setFormData({ ...formData, roomId: roomId });
@@ -143,7 +151,9 @@ const Reservaciones = () => {
 
   return (
     <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', backgroundRepeat: 'no-repeat' }}>
-      <Navbar />
+      {/* Renderiza Navbar si el usuario está logueado, de lo contrario, NavbarHome */}
+      {isLoggedIn ? <Navbar /> : <NavbarHome />}
+      
       <Box m={2}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -231,6 +241,11 @@ const Reservaciones = () => {
                         onChange={(time) => handleDateTimeChange('arrivalDateTime', time ? dayjs(formData.arrivalDateTime).hour(dayjs(time).hour()).minute(dayjs(time).minute()) : null)}
                         renderInput={(params) => <TextField {...params} />}
                       />
+                    </LocalizationProvider>
+                  </div>
+
+                  <div style={{ marginTop: 25 }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         label="Fecha de Salida"
                         value={formData.departureDateTime ? dayjs(formData.departureDateTime).startOf('day') : null}
@@ -246,20 +261,26 @@ const Reservaciones = () => {
                       />
                     </LocalizationProvider>
                   </div>
-                  <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: 16 }}>
-                    Confirmar Reserva
+                  <Button variant="contained" color="primary" fullWidth type="submit" sx={{ mt: 2 }}>
+                    Reservar
                   </Button>
                 </form>
               </CardContent>
             </Card>
           </Grid>
         </Grid>
+
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </div>
   );
 };

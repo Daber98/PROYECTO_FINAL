@@ -1,0 +1,8 @@
+/* homeAdmin.css */
+.home-admin {
+    background-color: #f0f2f5; /* Color de fondo */
+    min-height: 100vh; /* Asegura que cubra toda la altura de la ventana */
+    background-image: url('../image/fondo.jpg'); /* Imagen de fondo */
+    background-size: cover; /* Ajusta la imagen al tamaño del contenedor */
+    background-position: center; /* Centra la imagen de fondo */
+}
