@@ -124,3 +124,23 @@ exports.getReservationsByUserId = (req, res) => {
         return res.json({ Reservations: result });
     });
 };
+
+// READ - Obtener reservas de una habitación por ID
+
+//////////////////////////////////////////////////
+exports.getReservationsByRoomId = (req, res) => {
+    const roomId = req.params.id;
+    const sql = "SELECT FechaEntrada, FechaSalida FROM reservacion WHERE id_habitacion = ?";
+    con.query(sql, roomId, (err, result) => {
+        if (err) return res.json({ Error: "Error fetching reservations" });
+        if (result.length === 0) return res.json({ Error: "No reservations found for this room" });
+        
+        // Convertir las fechas en un formato adecuado para el frontend
+        const unavailableDates = result.map(reservation => ({
+            start: new Date(reservation.FechaEntrada),
+            end: new Date(reservation.FechaSalida)
+        }));
+        
+        return res.json({ UnavailableDates: unavailableDates });
+    });
+};

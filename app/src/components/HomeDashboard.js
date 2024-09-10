@@ -20,7 +20,7 @@ const HomeDashboard = () => {
                             "Donde cada estancia es una experiencia memorable."
                             </Typography>
                             <Box sx={{ textAlign: 'center' }}>
-                                <Button variant="contained" style={{ marginTop: 20, borderRadius: 10 }} component={Link} to="/Reservaciones" className="welcome-button">Reservar</Button>
+                                <Button variant="contained" style={{ marginTop: 20, borderRadius: 10 }} component={Link} to="/habitaciones" className="welcome-button">Reservar</Button>
                             </Box>
                         </CardContent>
                     </Card>

@@ -28,7 +28,7 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
-              <Route path="/habitacion" element={<Habitacion />} />
+              <Route path="/habitacion" element={<Habitaciones />} />
               <Route path="/informacion" element={<Informacion />} />
               <Route path="/" element={<Inicio />} />
               <Route path="/logout" element={<Logout />} />
@@ -53,13 +53,7 @@ function App() {
                   </RequireToken>
                 }
               />
-              <Route path="/reservaciones"
-                element={
-                  <RequireToken>
-                    <Reservaciones />
-                  </RequireToken>
-                }
-              />
+              <Route path="/reservaciones" element={<Reservaciones />} />
               <Route path="/reservaciones-admin"
                 element={
                   <RequireToken>
