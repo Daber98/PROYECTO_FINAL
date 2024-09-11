@@ -17,7 +17,7 @@ const ReservacionesAdmin = () => {
         Estado: "",
         EstadoPago: "",
         Monto: "",
-        Telefono: ""
+        telefono: ""
     });
 
     useEffect(() => {
@@ -39,6 +39,7 @@ const ReservacionesAdmin = () => {
         const selectedReservacion = reservaciones.find(reservacion => reservacion.id_reservacio  === reservacionId);
         setEditedReservacionData(selectedReservacion);
         setOpenEditDialog(true);
+        console.log(selectedReservacion)
     };
 
     const handleCloseEditDialog = () => {
@@ -52,6 +53,7 @@ const ReservacionesAdmin = () => {
                     setReservaciones(reservaciones.map(reservacion => reservacion.id_reservacio === editingReservacionId ? { ...reservacion, ...editedReservacionData } : reservacion));
                     setOpenEditDialog(false);
                 }
+                console.log(response)
             })
             .catch(error => {
                 console.error('Error updating reservacion:', error);
@@ -93,7 +95,7 @@ const ReservacionesAdmin = () => {
                         Estado: "",
                         EstadoPago: "",
                         Monto: "",
-                        Telefono: ""
+                        telefono: ""
                     });
                     setOpenCreateDialog(false);
                 }
@@ -135,7 +137,7 @@ const ReservacionesAdmin = () => {
                                     <TableCell>{reservacion.Estado}</TableCell>
                                     <TableCell>{reservacion.EstadoPago}</TableCell>
                                     <TableCell>{reservacion.Monto}</TableCell>
-                                    <TableCell>{reservacion.Telefono}</TableCell>
+                                    <TableCell>{reservacion.telefono}</TableCell>
                                     <TableCell>
                                         <Button variant="contained" color="primary" onClick={() => handleEditReservacion(reservacion.id_reservacio)}>Editar</Button>
                                         <Button variant="contained" color="secondary" onClick={() => handleDeleteReservacion(reservacion.id_reservacio)}>Eliminar</Button>
@@ -204,7 +206,7 @@ const ReservacionesAdmin = () => {
                         margin="dense"
                         id="EstadoPago"
                         label="Estado de Pago"
-                        type="text"
+                        type="number"
                         name="EstadoPago"
                         fullWidth
                         value={editedReservacionData.EstadoPago || ""}
@@ -222,12 +224,12 @@ const ReservacionesAdmin = () => {
                     />
                     <TextField
                         margin="dense"
-                        id="Telefono"
+                        id="telefono"
                         label="Telefono"
                         type="text"
                         name="Telefono"
                         fullWidth
-                        value={newReservacionData.Telefono || ""}
+                        value={editedReservacionData.telefono || ""}
                         onChange={handleNewReservacionChange} 
                     />
                 </DialogContent>
@@ -317,7 +319,7 @@ const ReservacionesAdmin = () => {
                         type="text"
                         name="Telefono"
                         fullWidth
-                        value={newReservacionData.Telefono}
+                        value={newReservacionData.telefono}
                         onChange={handleNewReservacionChange} 
                     />
                 </DialogContent>
