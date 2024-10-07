@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-import { Card, CardContent, TextField, Button, Typography, Link, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { Card, CardContent, TextField, Button, Typography, Link, Checkbox, FormControlLabel } from '@mui/material';
 
 import Navbar from '../home/Navbar.js';
 
@@ -16,8 +16,10 @@ const SignUp = () => {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState(""); // Estado para el rol
     const [registerStatus, setRegisterStatus] = useState("");
+
+    // Eliminar el estado de "role" porque no se necesita seleccionar.
+    const role = "cliente"; // Establecer el valor por defecto a "Cliente"
 
     const register = (e) => {
         e.preventDefault();
@@ -27,7 +29,7 @@ const SignUp = () => {
             first_name: name,
             phone: phone,
             password: password,
-            Rol: role, // Enviar el rol seleccionado
+            Rol: role, // Enviar el rol como "Cliente" por defecto
         }).then((response) => {
             console.log(response);
             if (response.data.Status === 'Error') {
@@ -44,7 +46,7 @@ const SignUp = () => {
 
     return (
         <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
-            <Navbar/>
+            <Navbar />
             <div className="container" style={{ paddingTop: 60 }}>
                 <div className="container-fluid h-custom">
                     <div className="row d-flex justify-content-center align-items-center h-100">
@@ -104,16 +106,6 @@ const SignUp = () => {
                                             onChange={(e) => setPassword(e.target.value)}
                                             required
                                         />
-                                        <FormControl fullWidth margin="normal" required>
-                                            <InputLabel>Rol</InputLabel>
-                                            <Select
-                                                value={role}
-                                                onChange={(e) => setRole(e.target.value)}
-                                            >
-                                                <MenuItem value="Cliente">Cliente</MenuItem>
-                                                <MenuItem value="Administrador">Administrador</MenuItem>
-                                            </Select>
-                                        </FormControl>
                                         <FormControlLabel
                                             control={<Checkbox color="primary" />}
                                             label="Recordar"
@@ -130,7 +122,7 @@ const SignUp = () => {
                             </Card>
                         </div>
                         <div className="col-md-5">
-                            <img src={villaImage} className="img-fluid" alt="Villa" style={{ width: '100%' }}/>
+                            <img src={villaImage} className="img-fluid" alt="Villa" style={{ width: '100%' }} />
                         </div>
                     </div>
                 </div>
