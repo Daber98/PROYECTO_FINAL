@@ -11,7 +11,7 @@ const UsuariosAdmin = () => {
     const [selectedRole, setSelectedRole] = useState("cliente"); // Default to "cliente"
 
     useEffect(() => {
-        axios.get('http://localhost:3001/usuario')
+        axios.get(`${process.env.REACT_APP_API_URL}/usuario`)
             .then(response => {
                 setUsers(response.data.Users);
             })
@@ -33,7 +33,7 @@ const UsuariosAdmin = () => {
     };
 
     const handleSaveEdit = () => {
-        axios.put(`http://localhost:3001/usuario/${editingUserId}`, { ...editedData, Rol: selectedRole })
+        axios.put(`${process.env.REACT_APP_API_URL}/usuario/${editingUserId}`, { ...editedData, Rol: selectedRole })
             .then(response => {
                 if (response.data.Status === "Success") {
                     setUsers(users.map(user => 
@@ -50,7 +50,7 @@ const UsuariosAdmin = () => {
     };
 
     const handleDeleteUser = (userId) => {
-        axios.delete(`http://localhost:3001/usuario/${userId}`)
+        axios.delete(`${process.env.REACT_APP_API_URL}/usuario/${userId}`)
             .then(response => {
                 if (response.data.Status === "Success") {
                     setUsers(users.filter(user => user.id_user !== userId));
