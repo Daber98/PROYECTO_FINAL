@@ -10,6 +10,8 @@ import "../../css/Signup.css";
 import fondo from "../../image/fondo.jpg"; // Importa la imagen de fondo
 import villaImage from "../../image/Entrada.jpg";
 
+const API_URL = process.env.REACT_APP_API_URL;  // Importar la variable de entorno
+
 const SignUp = () => {
     const [email, setEmail] = useState("");
     const [lastName, setLastName] = useState("");
@@ -23,7 +25,7 @@ const SignUp = () => {
 
     const register = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:3001/register", {
+        axios.post(`${API_URL}/register`, {  // Usar la variable de entorno
             email: email,
             last_name: lastName,
             first_name: name,

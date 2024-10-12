@@ -8,6 +8,8 @@ import "../../css/Login.css";
 import fondo from "../../image/fondo.jpg";
 import villaImage from "../../image/Entrada.jpg";
 
+const API_URL = process.env.REACT_APP_API_URL;  // Importar la variable de entorno
+
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,18 +19,18 @@ const Login = () => {
 
     const login = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:3001/login", { email, password })
+        axios.post(`${API_URL}/login`, { email, password })  // Usar la variable de entorno
         .then(res => {
             console.log(res);
             if(res.data.Status === 'Success') {
                 console.log(res.data.Token);
                 setToken(res.data.Token);
 
-                // Check the role and redirect based on it
+                // Verifica el rol y redirige según corresponda
                 if(res.data.User.role === 'administrador') {
-                    navigate('/Home-admin'); // Redirect to admin dashboard
+                    navigate('/Home-admin');  // Redirigir al dashboard de administrador
                 } else if (res.data.User.role === 'cliente') {
-                    navigate('/profile'); // Redirect to client profile
+                    navigate('/profile');  // Redirigir al perfil del cliente
                 }
             } else {
                 setError(res.data.Error);
