@@ -46,13 +46,13 @@ const Reservaciones = () => {
     setFormData({ ...formData, roomId: roomId });
 
     if (roomId) {
-      axios.get(`http://localhost:3001/habitacion/${roomId}`)
+      axios.get(`${process.env.REACT_APP_API_URL}/habitacion/${roomId}`)
         .then(response => {
           setPrice(response.data.Room.precioNoche);
-          setRoomImage(`http://localhost:3001/${response.data.Room.imagen}`);
+          setRoomImage(`${process.env.REACT_APP_API_URL}/${response.data.Room.imagen}`);
 
           // Obtener fechas no disponibles para la habitación
-          axios.get(`http://localhost:3001/reservas/${roomId}`)
+          axios.get(`${process.env.REACT_APP_API_URL}/reservas/${roomId}`)
             .then(response => {
               const dates = response.data.UnavailableDates.map(date => ({
                 start: dayjs(date.start),
@@ -106,7 +106,7 @@ const Reservaciones = () => {
         return;
       }
 
-      const response = await axios.post('http://localhost:3001/reservacion', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/reservacion`, {
         id_usuario: 1,
         id_habitacion: formData.roomId,
         FechaEntrada: formData.arrivalDateTime,

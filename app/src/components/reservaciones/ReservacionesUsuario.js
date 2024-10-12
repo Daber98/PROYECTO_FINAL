@@ -16,7 +16,7 @@ const ReservacionesUsuario = () => {
 
   useEffect(() => {
     // Fetch reservations when the component mounts
-    axios.get(`http://localhost:3001/reservacion/user/1`)
+    axios.get(`${process.env.REACT_APP_API_URL}/reservacion/user/1`)
       .then(response => {
         if (response.data.Error) {
           setSnackbarMessage(response.data.Error);

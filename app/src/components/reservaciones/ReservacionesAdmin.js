@@ -25,7 +25,7 @@ const ReservacionesAdmin = () => {
     }, []);
 
     const getAllReservations = () => {
-        axios.get('http://localhost:3001/reservacion')
+        axios.get(`${process.env.REACT_APP_API_URL}/reservacion`)
             .then(response => {
                 setReservaciones(response.data.Reservations);
             })
@@ -36,10 +36,10 @@ const ReservacionesAdmin = () => {
 
     const handleEditReservacion = (reservacionId) => {
         setEditingReservacionId(reservacionId);
-        const selectedReservacion = reservaciones.find(reservacion => reservacion.id_reservacio  === reservacionId);
+        const selectedReservacion = reservaciones.find(reservacion => reservacion.id_reservacio === reservacionId);
         setEditedReservacionData(selectedReservacion);
         setOpenEditDialog(true);
-        console.log(selectedReservacion)
+        console.log(selectedReservacion);
     };
 
     const handleCloseEditDialog = () => {
@@ -47,13 +47,13 @@ const ReservacionesAdmin = () => {
     };
 
     const handleSaveEdit = () => {
-        axios.put(`http://localhost:3001/reservacion/${editingReservacionId}`, editedReservacionData)
+        axios.put(`${process.env.REACT_APP_API_URL}/reservacion/${editingReservacionId}`, editedReservacionData)
             .then(response => {
                 if (response.data.Status === "Success") {
                     setReservaciones(reservaciones.map(reservacion => reservacion.id_reservacio === editingReservacionId ? { ...reservacion, ...editedReservacionData } : reservacion));
                     setOpenEditDialog(false);
                 }
-                console.log(response)
+                console.log(response);
             })
             .catch(error => {
                 console.error('Error updating reservacion:', error);
@@ -61,7 +61,7 @@ const ReservacionesAdmin = () => {
     };
 
     const handleDeleteReservacion = (reservacionId) => {
-        axios.delete(`http://localhost:3001/reservacion/${reservacionId}`)
+        axios.delete(`${process.env.REACT_APP_API_URL}/reservacion/${reservacionId}`)
             .then(response => {
                 if (response.data.Status === "Success") {
                     setReservaciones(reservaciones.filter(reservacion => reservacion.id_reservacio !== reservacionId));
@@ -83,7 +83,7 @@ const ReservacionesAdmin = () => {
     };
 
     const handleCreateReservacion = () => {
-        axios.post('http://localhost:3001/reservacion', newReservacionData)
+        axios.post(`${process.env.REACT_APP_API_URL}/reservacion`, newReservacionData)
             .then(response => {
                 if (response.data.Status === "Success") {
                     setReservaciones([...reservaciones, { id_reservacio: response.data.InsertId, ...newReservacionData }]);
@@ -227,10 +227,10 @@ const ReservacionesAdmin = () => {
                         id="telefono"
                         label="Telefono"
                         type="text"
-                        name="Telefono"
+                        name="telefono"
                         fullWidth
                         value={editedReservacionData.telefono || ""}
-                        onChange={handleNewReservacionChange} 
+                        onChange={handleInputChange}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -296,7 +296,7 @@ const ReservacionesAdmin = () => {
                         margin="dense"
                         id="EstadoPago"
                         label="Estado de Pago"
-                        type="text"
+                        type="number"
                         name="EstadoPago"
                         fullWidth
                         value={newReservacionData.EstadoPago}
@@ -314,13 +314,13 @@ const ReservacionesAdmin = () => {
                     />
                     <TextField
                         margin="dense"
-                        id="Telefono"
+                        id="telefono"
                         label="Telefono"
                         type="text"
-                        name="Telefono"
+                        name="telefono"
                         fullWidth
                         value={newReservacionData.telefono}
-                        onChange={handleNewReservacionChange} 
+                        onChange={handleNewReservacionChange}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -329,7 +329,7 @@ const ReservacionesAdmin = () => {
                 </DialogActions>
             </Dialog>
         </div>
-    )
-}
+    );
+};
 
 export default ReservacionesAdmin;
