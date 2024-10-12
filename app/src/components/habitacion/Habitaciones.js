@@ -6,6 +6,9 @@ import fondo from "../../image/fondo.jpg"; // Importa la imagen de fondo
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 
+// Importar la variable de entorno
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Habitaciones = () => {
     const [habitaciones, setHabitaciones] = useState([]);
     const [habitacionSeleccionada, setHabitacionSeleccionada] = useState("Habitaciones simples");
@@ -20,7 +23,7 @@ const Habitaciones = () => {
         }
 
         // Realizar la solicitud para obtener las habitaciones del servidor
-        fetch('http://localhost:3001/habitacion')
+        fetch(`${API_URL}/habitacion`) // Usar la variable de entorno
             .then(response => response.json())
             .then(data => {
                 setHabitaciones(data.Rooms); // El nombre del campo debe coincidir con el que devuelve el servidor
@@ -69,8 +72,8 @@ const Habitaciones = () => {
 }
 
 const Tarjeta = ({ habitacion }) => {
-    // Construye la URL completa de la imagen
-    const imagenUrl = `http://localhost:3001/${habitacion.imagen}`;
+    // Construye la URL completa de la imagen usando la variable de entorno
+    const imagenUrl = `${API_URL}/${habitacion.imagen}`; // Usar la variable de entorno
 
     return (
         <Card sx={{ width: 425, marginBottom: '30px', marginLeft: 5, marginRight: 5 }}>

@@ -23,6 +23,9 @@ import axios from 'axios';
 
 const tiposHabitacion = ['Habitación simple', 'Habitación doble', 'Habitación triple'];
 
+// Importar la variable de entorno
+const API_URL = process.env.REACT_APP_API_URL;
+
 const HabitacionesAdmin = () => {
     const [habitaciones, setHabitaciones] = useState([]);
     const [editingHabitacionId, setEditingHabitacionId] = useState(null);
@@ -37,7 +40,7 @@ const HabitacionesAdmin = () => {
     const [selectedImage, setSelectedImage] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:3001/habitacion')
+        axios.get(`${API_URL}/habitacion`)
             .then(response => {
                 setHabitaciones(response.data.Rooms);
             })
@@ -65,8 +68,8 @@ const HabitacionesAdmin = () => {
         if (selectedImage) {
             formData.append("imagen", selectedImage);
         }
-    
-        axios.put(`http://localhost:3001/habitacion/${editingHabitacionId}`, formData, {
+
+        axios.put(`${API_URL}/habitacion/${editingHabitacionId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -82,10 +85,9 @@ const HabitacionesAdmin = () => {
                 console.error('Error updating habitacion:', error);
             });
     };
-    
 
     const handleDeleteHabitacion = (habitacionId) => {
-        fetch(`http://localhost:3001/habitacion/${habitacionId}`, {
+        fetch(`${API_URL}/habitacion/${habitacionId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -129,7 +131,7 @@ const HabitacionesAdmin = () => {
         formData.append("disponible", newHabitacionData.disponible);
         formData.append("imagen", selectedImage);
 
-        axios.post('http://localhost:3001/habitacion', formData, {
+        axios.post(`${API_URL}/habitacion`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -172,7 +174,7 @@ const HabitacionesAdmin = () => {
                                     <TableCell>{habitacion.precioNoche}</TableCell>
                                     <TableCell>{habitacion.disponible}</TableCell>
                                     <TableCell>
-                                        <img src={`http://localhost:3001/${habitacion.imagen}`} alt="Habitación" style={{ width: 100, height: 100 }} />
+                                        <img src={`${API_URL}/${habitacion.imagen}`} alt="Habitación" style={{ width: 100, height: 100 }} />
                                     </TableCell>
                                     <TableCell>
                                         <Button variant="contained" color="primary" onClick={() => handleEditHabitacion(habitacion.id_habitacio)}>Editar</Button>
@@ -184,6 +186,7 @@ const HabitacionesAdmin = () => {
                     </Table>
                 </TableContainer>
             </div>
+            {/* Edit Dialog */}
             <Dialog open={openEditDialog} onClose={handleCloseEditDialog}>
                 <DialogTitle>Editar Habitacion</DialogTitle>
                 <DialogContent>
@@ -236,6 +239,7 @@ const HabitacionesAdmin = () => {
                     <Button onClick={handleSaveEdit}>Guardar</Button>
                 </DialogActions>
             </Dialog>
+            {/* Create Dialog */}
             <Dialog open={openCreateDialog} onClose={() => setOpenCreateDialog(false)}>
                 <DialogTitle>Crear Habitacion</DialogTitle>
                 <DialogContent>
@@ -293,7 +297,7 @@ const HabitacionesAdmin = () => {
                 </DialogActions>
             </Dialog>
         </div>
-    )
+    );
 }
 
 export default HabitacionesAdmin;
