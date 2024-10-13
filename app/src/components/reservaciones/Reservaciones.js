@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Box, Card, CardContent, Typography, TextField, Button, Grid, Snackbar, Alert, CardMedia } from "@mui/material";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import dayjs from 'dayjs';
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Snackbar,
+  Alert,
+  CardMedia,
+} from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import dayjs from "dayjs";
 import Navbar from "../NavbarDashboard";
-import NavbarHome from '../home/Navbar';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import NavbarHome from "../home/Navbar";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import fondo from "../../image/fondo.jpg";
 import { fetchToken } from "../hooks/Auth"; // Asegúrate de tener este hook o función para obtener el token
 
@@ -24,7 +35,7 @@ const Reservaciones = () => {
   });
 
   const [price, setPrice] = useState("");
-  const [roomImage, setRoomImage] = useState("");
+  const [roomImage, setRoomImage] = useState(""); // Esta es la URL de la imagen
   const [unavailableDates, setUnavailableDates] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -46,23 +57,30 @@ const Reservaciones = () => {
     setFormData({ ...formData, roomId: roomId });
 
     if (roomId) {
-      axios.get(`${process.env.REACT_APP_API_URL}/habitacion/${roomId}`)
-        .then(response => {
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/habitacion/${roomId}`)
+        .then((response) => {
           setPrice(response.data.Room.precioNoche);
-          setRoomImage(`${process.env.REACT_APP_API_URL}/${response.data.Room.imagen}`);
+          // Asegúrate de construir la URL correctamente aquí
+          setRoomImage(response.data.Room.imagen); 
 
           // Obtener fechas no disponibles para la habitación
-          axios.get(`${process.env.REACT_APP_API_URL}/reservas/${roomId}`)
-            .then(response => {
-              const dates = response.data.UnavailableDates.map(date => ({
+          axios
+            .get(`${process.env.REACT_APP_API_URL}/reservas/${roomId}`)
+            .then((response) => {
+              const dates = response.data.UnavailableDates.map((date) => ({
                 start: dayjs(date.start),
-                end: dayjs(date.end)
+                end: dayjs(date.end),
               }));
               setUnavailableDates(dates);
             })
-            .catch(error => console.error('Error fetching unavailable dates:', error));
+            .catch((error) =>
+              console.error("Error fetching unavailable dates:", error)
+            );
         })
-        .catch(error => console.error('Error fetching room price and image:', error));
+        .catch((error) =>
+          console.error("Error fetching room price and image:", error)
+        );
     }
   }, []);
 
@@ -73,17 +91,29 @@ const Reservaciones = () => {
   const handleDateTimeChange = (type, dateTime) => {
     setFormData({ ...formData, [type]: dateTime });
 
-    if (type === 'arrivalDateTime') {
-      if (dateTime && formData.departureDateTime && dayjs(dateTime).isAfter(dayjs(formData.departureDateTime))) {
-        setArrivalDateError("La fecha de llegada no puede ser después de la fecha de salida.");
+    if (type === "arrivalDateTime") {
+      if (
+        dateTime &&
+        formData.departureDateTime &&
+        dayjs(dateTime).isAfter(dayjs(formData.departureDateTime))
+      ) {
+        setArrivalDateError(
+          "La fecha de llegada no puede ser después de la fecha de salida."
+        );
       } else {
         setArrivalDateError("");
       }
     }
 
-    if (type === 'departureDateTime') {
-      if (dateTime && formData.arrivalDateTime && dayjs(dateTime).isBefore(dayjs(formData.arrivalDateTime))) {
-        setDepartureDateError("La fecha de salida no puede ser antes de la fecha de llegada.");
+    if (type === "departureDateTime") {
+      if (
+        dateTime &&
+        formData.arrivalDateTime &&
+        dayjs(dateTime).isBefore(dayjs(formData.arrivalDateTime))
+      ) {
+        setDepartureDateError(
+          "La fecha de salida no puede ser antes de la fecha de llegada."
+        );
       } else {
         setDepartureDateError("");
       }
@@ -102,38 +132,44 @@ const Reservaciones = () => {
     try {
       const token = fetchToken();
       if (!token) {
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/reservacion`, {
-        id_usuario: 1,
-        id_habitacion: formData.roomId,
-        FechaEntrada: formData.arrivalDateTime,
-        FechaSalida: formData.departureDateTime,
-        Estado: "Pendiente",
-        EstadoPago: "0",
-        Monto: price,
-        Telefono: formData.phone
-      }, {
-        headers: {
-          'Authorization': `Bearer ${token}`  // Incluye el token en los headers
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/reservacion`,
+        {
+          id_usuario: 1,
+          id_habitacion: formData.roomId,
+          FechaEntrada: formData.arrivalDateTime,
+          FechaSalida: formData.departureDateTime,
+          Estado: "Pendiente",
+          EstadoPago: "0",
+          Monto: price,
+          Telefono: formData.phone,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Incluye el token en los headers
+          },
         }
-      });
+      );
 
-      if (response.data.Status === 'Success') {
+      if (response.data.Status === "Success") {
         setSnackbarSeverity("success");
         setSnackbarMessage("¡Reservación realizada con éxito!");
         setSnackbarOpen(true);
         setTimeout(() => {
-          navigate('/reservaciones-usuario');
+          navigate("/reservaciones-usuario");
         }, 2000);
       } else {
         setSnackbarSeverity("error");
-        setSnackbarMessage("Hubo un problema al realizar la reservación o la habitación ya está reservada.");
+        setSnackbarMessage(
+          "Hubo un problema al realizar la reservación o la habitación ya está reservada."
+        );
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       setSnackbarSeverity("error");
       setSnackbarMessage("Error al conectarse con el servidor.");
     }
@@ -146,14 +182,24 @@ const Reservaciones = () => {
   };
 
   const isDateUnavailable = (date) => {
-    return unavailableDates.some(({ start, end }) => date.isBetween(start, end, null, '[]'));
+    return unavailableDates.some(({ start, end }) =>
+      date.isBetween(start, end, null, "[]")
+    );
   };
 
   return (
-    <div style={{ backgroundImage: `url(${fondo})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', backgroundRepeat: 'no-repeat' }}>
+    <div
+      style={{
+        backgroundImage: `url(${fondo})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       {/* Renderiza Navbar si el usuario está logueado, de lo contrario, NavbarHome */}
       {isLoggedIn ? <Navbar /> : <NavbarHome />}
-      
+
       <Box m={2}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -230,15 +276,41 @@ const Reservaciones = () => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         label="Fecha de Llegada"
-                        value={formData.arrivalDateTime ? dayjs(formData.arrivalDateTime).startOf('day') : null}
-                        onChange={(date) => handleDateTimeChange('arrivalDateTime', date ? dayjs(date).hour(dayjs(formData.arrivalDateTime)?.hour() || 0).minute(dayjs(formData.arrivalDateTime)?.minute() || 0) : null)}
-                        renderInput={(params) => <TextField {...params} helperText={arrivalDateError} />}
+                        value={
+                          formData.arrivalDateTime
+                            ? dayjs(formData.arrivalDateTime).startOf("day")
+                            : null
+                        }
+                        onChange={(date) =>
+                          handleDateTimeChange(
+                            "arrivalDateTime",
+                            date
+                              ? dayjs(date)
+                                  .hour(dayjs(formData.arrivalDateTime)?.hour() || 0)
+                                  .minute(dayjs(formData.arrivalDateTime)?.minute() || 0)
+                              : null
+                          )
+                        }
+                        renderInput={(params) => (
+                          <TextField {...params} helperText={arrivalDateError} />
+                        )}
                         shouldDisableDate={isDateUnavailable}
                       />
                       <TimePicker
                         label="Hora de Llegada"
-                        value={formData.arrivalDateTime ? dayjs(formData.arrivalDateTime) : null}
-                        onChange={(time) => handleDateTimeChange('arrivalDateTime', time ? dayjs(formData.arrivalDateTime).hour(dayjs(time).hour()).minute(dayjs(time).minute()) : null)}
+                        value={
+                          formData.arrivalDateTime ? dayjs(formData.arrivalDateTime) : null
+                        }
+                        onChange={(time) =>
+                          handleDateTimeChange(
+                            "arrivalDateTime",
+                            time
+                              ? dayjs(formData.arrivalDateTime)
+                                  .hour(dayjs(time).hour())
+                                  .minute(dayjs(time).minute())
+                              : null
+                          )
+                        }
                         renderInput={(params) => <TextField {...params} />}
                       />
                     </LocalizationProvider>
@@ -248,15 +320,41 @@ const Reservaciones = () => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         label="Fecha de Salida"
-                        value={formData.departureDateTime ? dayjs(formData.departureDateTime).startOf('day') : null}
-                        onChange={(date) => handleDateTimeChange('departureDateTime', date ? dayjs(date).hour(dayjs(formData.departureDateTime)?.hour() || 0).minute(dayjs(formData.departureDateTime)?.minute() || 0) : null)}
-                        renderInput={(params) => <TextField {...params} helperText={departureDateError} />}
+                        value={
+                          formData.departureDateTime
+                            ? dayjs(formData.departureDateTime).startOf("day")
+                            : null
+                        }
+                        onChange={(date) =>
+                          handleDateTimeChange(
+                            "departureDateTime",
+                            date
+                              ? dayjs(date)
+                                  .hour(dayjs(formData.departureDateTime)?.hour() || 0)
+                                  .minute(dayjs(formData.departureDateTime)?.minute() || 0)
+                              : null
+                          )
+                        }
+                        renderInput={(params) => (
+                          <TextField {...params} helperText={departureDateError} />
+                        )}
                         shouldDisableDate={isDateUnavailable}
                       />
                       <TimePicker
                         label="Hora de Salida"
-                        value={formData.departureDateTime ? dayjs(formData.departureDateTime) : null}
-                        onChange={(time) => handleDateTimeChange('departureDateTime', time ? dayjs(formData.departureDateTime).hour(dayjs(time).hour()).minute(dayjs(time).minute()) : null)}
+                        value={
+                          formData.departureDateTime ? dayjs(formData.departureDateTime) : null
+                        }
+                        onChange={(time) =>
+                          handleDateTimeChange(
+                            "departureDateTime",
+                            time
+                              ? dayjs(formData.departureDateTime)
+                                  .hour(dayjs(time).hour())
+                                  .minute(dayjs(time).minute())
+                              : null
+                          )
+                        }
                         renderInput={(params) => <TextField {...params} />}
                       />
                     </LocalizationProvider>
@@ -276,7 +374,7 @@ const Reservaciones = () => {
           onClose={handleSnackbarClose}
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         >
-          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
             {snackbarMessage}
           </Alert>
         </Snackbar>

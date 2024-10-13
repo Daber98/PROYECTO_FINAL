@@ -1,15 +1,30 @@
 const con = require('../database/mysqlConnection');
 const multer = require('multer');
-const fs = require('fs');
-const jwt = require('jsonwebtoken');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Configurar Multer para almacenar las imágenes en el directorio 'uploads/'
-const upload = multer({ dest: 'uploads/' });
+// Configurar Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-// READ - Obtener todas las habitacion
+// Configurar Multer para usar Cloudinary como almacenamiento
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'habitaciones', // Nombre de la carpeta en Cloudinary
+        allowed_formats: ['jpg', 'png', 'jpeg'], // Formatos permitidos
+    },
+});
+
+const upload = multer({ storage: storage });
+
+// READ - Obtener todas las habitaciones
 exports.getAllRooms = (req, res) => {
     const sql = "SELECT * FROM habitacion";
     con.query(sql, (err, result) => {
@@ -37,20 +52,11 @@ exports.createRoom = [
             return res.status(400).json({ error: "File is required" });
         }
 
-        const { originalname, path } = req.file;
-        const parts = originalname.split(".");
-        const ext = parts[parts.length - 1];
-        const newPath = path + "." + ext;
-
-        try {
-            fs.renameSync(path, newPath);
-        } catch (error) {
-            return res.status(500).json({ error: "Failed to rename file" });
-        }
-
         const { tipo, precioNoche, disponible } = req.body;
+        const imageUrl = req.file.path; // URL de la imagen en Cloudinary
+
         const sql = "INSERT INTO habitacion (`tipo`, `precioNoche`, `disponible`, `imagen`) VALUES (?, ?, ?, ?)";
-        const values = [tipo, precioNoche, disponible, newPath];
+        const values = [tipo, precioNoche, disponible, imageUrl];
         con.query(sql, values, (err, result) => {
             if (err) return res.json({ Error: "Error inserting data" });
             return res.json({ Status: "Success", InsertId: result.insertId });
@@ -64,22 +70,14 @@ exports.updateRoom = [
     (req, res) => {
         const roomId = req.params.id;
         const { tipo, precioNoche, disponible } = req.body;
-        let newPath = null;
+        let imageUrl = req.body.imagen; // Mantener la URL existente si no se subió una nueva imagen
 
         if (req.file) {
-            const { originalname, path } = req.file;
-            const parts = originalname.split(".");
-            const ext = parts[parts.length - 1];
-            newPath = path + "." + ext;
-            try {
-                fs.renameSync(path, newPath);
-            } catch (error) {
-                return res.status(500).json({ error: "Failed to rename file" });
-            }
+            imageUrl = req.file.path; // URL de la nueva imagen en Cloudinary
         }
 
         const sql = "UPDATE habitacion SET tipo = ?, precioNoche = ?, disponible = ?, imagen = ? WHERE id_habitacio = ?";
-        const values = [tipo, precioNoche, disponible, newPath || req.body.imagen, roomId];
+        const values = [tipo, precioNoche, disponible, imageUrl, roomId];
         con.query(sql, values, (err, result) => {
             if (err) return res.json({ Error: "Error updating data" });
             return res.json({ Status: "Success" });

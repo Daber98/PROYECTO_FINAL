@@ -72,8 +72,8 @@ const Habitaciones = () => {
 }
 
 const Tarjeta = ({ habitacion }) => {
-    // Construye la URL completa de la imagen usando la variable de entorno
-    const imagenUrl = `${API_URL}/${habitacion.imagen}`; // Usar la variable de entorno
+    // Asegúrate de que habitacion.imagen contenga solo el Public ID
+    const imagenUrl = habitacion.imagen; // Asegúrate de que esto esté bien
 
     return (
         <Card sx={{ width: 425, marginBottom: '30px', marginLeft: 5, marginRight: 5 }}>
@@ -81,6 +81,7 @@ const Tarjeta = ({ habitacion }) => {
                 component="img"
                 image={imagenUrl} 
                 alt="Imagen de la habitación"
+                onError={(e) => { e.target.src = "URL_DE_IMAGEN_DE_RESPALDO"; }} // Reemplaza esto con una imagen de respaldo en caso de error
             />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">

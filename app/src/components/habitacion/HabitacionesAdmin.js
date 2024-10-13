@@ -174,7 +174,7 @@ const HabitacionesAdmin = () => {
                                     <TableCell>{habitacion.precioNoche}</TableCell>
                                     <TableCell>{habitacion.disponible}</TableCell>
                                     <TableCell>
-                                        <img src={`${API_URL}/${habitacion.imagen}`} alt="Habitación" style={{ width: 100, height: 100 }} />
+                                        <img src={habitacion.imagen} alt="Habitación" style={{ width: 100, height: 100 }} />
                                     </TableCell>
                                     <TableCell>
                                         <Button variant="contained" color="primary" onClick={() => handleEditHabitacion(habitacion.id_habitacio)}>Editar</Button>
