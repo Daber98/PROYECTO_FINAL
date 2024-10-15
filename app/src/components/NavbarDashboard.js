@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 import logo from '../image/Logo.jpg';
 
 const NavbarDashboard = () => {
@@ -23,15 +24,17 @@ const NavbarDashboard = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
-                            <a className="nav-link" href="./habitaciones">Habitaciones</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="./reservaciones-usuario">Reservaciones</a>
-                        </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/habitaciones">Habitaciones</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/reservaciones-usuario">Reservaciones</Link>
+                    </li>
                     </ul>
                     <div className="d-flex">
-                        <a className="btn btn-outline-light" href="/logout" onClick={signOut}>Cerrar Sesion</a>
+                        <button className="btn btn-outline-light" onClick={signOut}>
+                            Cerrar Sesión
+                        </button>
                     </div>
                 </div>
             </div>

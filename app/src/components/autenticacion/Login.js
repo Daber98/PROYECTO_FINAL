@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { setToken } from '../hooks/Auth.js';
 import Navbar from '../home/Navbar.js';
-import { Card, CardContent, TextField, Button, Typography, Link, Checkbox, FormControlLabel } from '@mui/material';
+import { Card, CardContent, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import "../../css/Login.css";
 import fondo from "../../image/fondo.jpg";
 import villaImage from "../../image/Entrada.jpg";
@@ -86,7 +87,7 @@ const Login = () => {
                                         </Typography>
                                         <Button type="submit" variant="contained" color="primary" fullWidth size="large" style={{ marginTop: 120 }}>Ingresar</Button>
                                         <Typography variant="body2" style={{ marginTop: '10px' }}>
-                                            ¿No tienes una cuenta? <Link href="signup">Regístrate aquí</Link>
+                                            ¿No tienes una cuenta? <Link to="/SignUp">Regístrate aquí</Link>
                                         </Typography>
                                     </form>
                                 </CardContent>
