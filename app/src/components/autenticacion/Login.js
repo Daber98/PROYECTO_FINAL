@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import { setToken } from '../hooks/Auth.js';
 import Navbar from '../home/Navbar.js';
-import { Card, CardContent, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
+import { Card, CardContent, TextField, Button, Typography, Link, Checkbox, FormControlLabel } from '@mui/material';
 import "../../css/Login.css";
 import fondo from "../../image/fondo.jpg";
 import villaImage from "../../image/Entrada.jpg";
