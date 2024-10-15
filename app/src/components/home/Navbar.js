@@ -1,5 +1,6 @@
 import React from "react";
 import { fetchToken } from '../hooks/Auth.js';
+import Link from '@mui/material/Link';
 import logo from '../../image/Logo.jpg';
 
 const Navbar = () => {
@@ -16,17 +17,17 @@ const Navbar = () => {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="/">Inicio</a>
+                            <Link className="nav-link active" aria-current="page" href="/">Inicio</Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/habitacion">Habitaciones</a>
+                            <Link className="nav-link" href="/habitacion">Habitaciones</Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/Informacion">Informacion</a>
+                            <Link className="nav-link" href="/Informacion">Informacion</Link>
                         </li>
                     </ul>
                     <div className="d-flex" style={{ marginTop: '10px' }}> {/* Agregando margen superior */}
-                        <a className="btn btn-outline-light" href="/SignUp">Registrarse</a>
+                        <Link className="btn btn-outline-light" href="/SignUp">Registrarse</Link>
                     </div>
                 </div>
             </div>
