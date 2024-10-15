@@ -1,6 +1,6 @@
 import React from "react";
 import { fetchToken } from '../hooks/Auth.js';
-import Link from '@mui/material/Link';
+import { Link } from 'react-router-dom';
 import logo from '../../image/Logo.jpg';
 
 const Navbar = () => {
@@ -16,18 +16,18 @@ const Navbar = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
-                            <Link className="nav-link active" aria-current="page" href="/">Inicio</Link>
+                    <li className="nav-item">
+                            <Link className="nav-link active" aria-current="page" to="/">Inicio</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" href="/habitacion">Habitaciones</Link>
+                            <Link className="nav-link" to="/habitacion">Habitaciones</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" href="/Informacion">Informacion</Link>
+                            <Link className="nav-link" to="/Informacion">Informacion</Link>
                         </li>
                     </ul>
-                    <div className="d-flex" style={{ marginTop: '10px' }}> {/* Agregando margen superior */}
-                        <Link className="btn btn-outline-light" href="/SignUp">Registrarse</Link>
+                    <div className="d-flex" style={{ marginTop: '10px' }}>
+                        <Link className="btn btn-outline-light" to="/SignUp">Registrarse</Link>
                     </div>
                 </div>
             </div>
