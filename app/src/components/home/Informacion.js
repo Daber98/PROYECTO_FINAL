@@ -80,7 +80,7 @@ const Informacion = () => {
                                 Correo
                             </Typography>
                             <Typography color="textSecondary">
-                                info@hotelvilladelrio.com
+                            hotelvilladelrio25@gmail.com
                             </Typography>
                             <Typography variant="h5" component="h2" style={{ marginTop: '20px' }}>
                                 Teléfono
