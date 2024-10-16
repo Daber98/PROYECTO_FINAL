@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Box, Card, CardContent, CardActions, CardMedia, Typography, Button, Grid } from '@mui/material';
+import { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import { Box, Card, CardContent, CardActions, CardMedia, Typography, Grid } from '@mui/material';
 import Navbar from '../NavbarDashboard';
 import NavbarHome from '../home/Navbar';
 import fondo from "../../image/fondo.jpg"; // Importa la imagen de fondo
@@ -92,14 +94,14 @@ const Tarjeta = ({ habitacion }) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button
-                    component="a"
-                    href={`/Reservaciones?habitacion=${habitacion.id_habitacio}`}
-                    size="small"
-                    color="primary"
-                >
-                    Ver más
-                </Button>
+            <Button
+                component={Link} // Cambiamos "a" a Link de React Router
+                to={`/Reservaciones?habitacion=${habitacion.id_habitacio}`} // Usamos "to" en lugar de "href"
+                size="small"
+                color="primary"
+            >
+                Ver más
+            </Button>
             </CardActions>
         </Card>
     );

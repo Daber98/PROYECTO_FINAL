@@ -86,7 +86,7 @@ const Login = () => {
                                         </Typography>
                                         <Button type="submit" variant="contained" color="primary" fullWidth size="large" style={{ marginTop: 120 }}>Ingresar</Button>
                                         <Typography variant="body2" style={{ marginTop: '10px' }}>
-                                            ¿No tienes una cuenta? <Link to="/SignUp">Regístrate aquí</Link>
+                                            ¿No tienes una cuenta? <Link to="/PROYECTO_FINALSignUp">Regístrate aquí</Link>
                                         </Typography>
                                     </form>
                                 </CardContent>
