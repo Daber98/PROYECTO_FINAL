@@ -122,19 +122,19 @@ const Inicio = () => {
                         titulo="Habitación Simple" 
                         contenido="¿Estás buscando un lugar cómodo y tranquilo para tu próxima escapada? ¡No busques más! Nuestra habitación individual es perfecta para viajeros solitarios que desean un espacio íntimo y acogedor para descansar."  
                         imagen={imageSimple} 
-                        precio="Precio: Q120/noche"
+                        precio="Precio: Q150/noche"
                     />
                     <Tarjeta 
                         titulo="Habitación Doble" 
                         contenido="¿Estás buscando un lugar cómodo y tranquilo para tu próxima escapada con un amigo o familiar? ¡No busques más! Nuestra habitación con dos camas individuales es perfecta para aquellos que desean un espacio acogedor para descansar y compartir momentos especiales juntos." 
                         imagen={imageDoble} 
-                        precio="Precio: Q150/noche"
+                        precio="Precio: Q250/noche"
                     />
                     <Tarjeta 
                         titulo="Habitación Triple" 
                         contenido="¿Estás planeando una escapada con amigos o familiares? ¡Tenemos la solución perfecta para ti! Nuestra habitación con tres camas es ideal para grupos pequeños que buscan comodidad y conveniencia durante su estadía." 
                         imagen={imageTriple} 
-                        precio="Precio: Q180/noche"
+                        precio="Precio: Q350/noche"
                     />
                 </div>
             </Box>
